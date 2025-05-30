@@ -24,4 +24,4 @@ C:\Users\Dom\Documents\GitHub\Small-Projects\CryptoTransactionsParsingTool\Crypt
 C:\Users\Dom\Documents\GitHub\Small-Projects\CryptoTransactionsParsingTool\CryptoTransactionsParsingTool\bin\Debug\System.Numerics.Vectors.xml
 C:\Users\Dom\Documents\GitHub\Small-Projects\CryptoTransactionsParsingTool\CryptoTransactionsParsingTool\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\Dom\Documents\GitHub\Small-Projects\CryptoTransactionsParsingTool\CryptoTransactionsParsingTool\bin\Debug\System.Threading.Tasks.Extensions.xml
-C:\Users\Dom\Documents\GitHub\Small-Projects\CryptoTransactionsParsingTool\CryptoTransactionsParsingTool\obj\Debug\CryptoTransactionsParsingTool.csproj.CopyComplete
+C:\Users\Dom\Documents\GitHub\Small-Projects\CryptoTransactionsParsingTool\CryptoTransactionsParsingTool\obj\Debug\CryptoTr.C89D43E2.Up2Date
