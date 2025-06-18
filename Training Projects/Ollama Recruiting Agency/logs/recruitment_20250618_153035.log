@@ -1,0 +1,10 @@
+2025-06-18 15:30:47,448 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 15:30:51,024 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 15:30:57,146 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 15:31:02,573 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 15:31:02,578 - AI_Recruiter - ERROR - Processing error: 'Final_recommendation'
+Traceback (most recent call last):
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\app.py", line 187, in main
+    result["Final_recommendation"]["final_recommendation"],
+    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'Final_recommendation'

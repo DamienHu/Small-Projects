@@ -1,0 +1,49 @@
+2025-06-18 16:54:25,923 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 16:54:28,954 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 16:54:28,955 - AI_Recruiter - ERROR - Error processing resume: name 're' is not defined
+2025-06-18 16:54:28,956 - AI_Recruiter - ERROR - Processing error: name 're' is not defined
+Traceback (most recent call last):
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\agents\base_agent.py", line 51, in _parse_json_safely
+    return json.loads(text)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Invalid control character at: line 9 column 133 (char 420)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\app.py", line 126, in main
+    result = asyncio.run(process_resume(file_path))
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\app.py", line 57, in process_resume
+    return await orchestrator.process_application(resume_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\agents\orchestrator.py", line 55, in process_application
+    analysis_results = await self.analyzer.run(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^
+        [{"role":"user", "content": str(extracted_data)}]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\agents\analyzer_agent.py", line 60, in run
+    parsed_result = self._parse_json_safely(analysis_result)
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\agents\base_agent.py", line 54, in _parse_json_safely
+    json_match = re.search(r'(\{.*\}|\[.*\])', text, re.DOTALL)
+                 ^^
+NameError: name 're' is not defined. Did you forget to import 're'?

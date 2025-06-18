@@ -24,7 +24,7 @@ class BaseAgent:
                     {"role":"system","content":self.instructions},
                     {"role": "user", "content":prompt},
                 ],
-                temperature=0.7,
+                temperature=0.1,
                 max_tokens=2000,
             )
             return response.choices[0].message.content
@@ -32,15 +32,31 @@ class BaseAgent:
             print(f"Error querying Ollama: {str(e)}")
             raise
 
-    def _parse_json_safely(self,text:str)-> Dict[str,Any]:
-        """Safely parse JSON from text, handling potential errors"""
+    # def _parse_json_safely(self,text:str)-> Dict[str,Any]:
+    #     """Safely parse JSON from text, handling potential errors"""
+    #     try:
+    #         #Try to find JSON-like content between curly braces
+    #         start = text.find("{")
+    #         end = text.find("}")
+    #         if start != -1 and end != -1:
+    #             json_str = text[start:end+1]
+    #             return json.loads(json_str)
+    #         return {"error":"No JSON content found"}
+    #     except json.JSONDecodeError:
+    #         return {"error": "Invalid JSON content"}
+    def _parse_json_safely(self, text: str) -> Dict[str, Any]:
+        text = text.strip()
         try:
-            #Try to find JSON-like content between curly braces
-            start = text.find("{")
-            end = text.find("}")
-            if start != -1 and end != -1:
-                json_str = text[start:end+1]
-                return json.loads(json_str)
-            return {"error":"No JSON content found"}
+            # Try direct JSON parsing
+            return json.loads(text)
         except json.JSONDecodeError:
+            # Extract JSON object or array from text using regex
+            json_match = re.search(r'(\{.*\}|\[.*\])', text, re.DOTALL)
+            if json_match:
+                json_str = json_match.group(1)
+                try:
+                    return json.loads(json_str)
+                except json.JSONDecodeError:
+                    pass
+            # Return error dict if parsing fails
             return {"error": "Invalid JSON content"}

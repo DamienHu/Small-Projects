@@ -1,0 +1,31 @@
+2025-06-18 15:27:41,698 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 15:27:44,792 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 15:27:50,949 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 15:27:50,950 - AI_Recruiter - ERROR - Error processing resume: module 'datetime' has no attribute 'now'
+2025-06-18 15:27:50,951 - AI_Recruiter - ERROR - Processing error: module 'datetime' has no attribute 'now'
+Traceback (most recent call last):
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\app.py", line 126, in main
+    result = asyncio.run(process_resume(file_path))
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\app.py", line 57, in process_resume
+    return await orchestrator.process_application(resume_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\agents\orchestrator.py", line 71, in process_application
+    screening_results = await self.screener.run(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+        [{"role": "user", "content": str(workflow_context)}]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\agents\screener_agent.py", line 34, in run
+    "screening_timestamp": datetime.now(),  #Current time stamp
+                           ^^^^^^^^^^^^
+AttributeError: module 'datetime' has no attribute 'now'

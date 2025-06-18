@@ -7,7 +7,9 @@ import re
 import sqlite3
 from datetime import datetime
 
-class MatcherAgenet(BaseAgent):
+#Class definition for MatcherAgent inheriting from BaseAgent.
+class MatcherAgent(BaseAgent):
+    # Init method that sets up the agent's name, instructions, and initializes the job database connection.
     def __init__(self):
         super().__init__(
             name = "Matcher",
@@ -18,18 +20,22 @@ class MatcherAgenet(BaseAgent):
                 Return matches in JSON format with title, match_score, and location fields.
                 """
         )
+        #Ininit a JobDatabase object for interacting with jobs database
         self.db = JobDatabase()
 
+    #Async method to run the matching process based on provided messages (analysis results).
     async def run(self, messages:list)->Dict[str,Any]:
         """Match candidate with available positions"""
         print("Matcher: Finding suitable job matches")
 
+        content = messages[-1].get("content", "{}")
         try:
-            #Convert single quotes to double quotes to make it valid JSON
-            content = messages[-1].get("content", "{}").replace("'", '"')
-            analysis_results = json.loads(content)
+            #Attempting to parse the contnet of the last message as JSON
+            analysis_results = ast.literal_eval(content)
         except json.JSONDecodeError as e:
             print(f"Error parsing analysis results: {e}")
+            
+            #Return an empty match result in case of JSON parse error
             return{
                 "matched_jobs":[],
                 "match_timestamp": datetime.now(),
@@ -54,15 +60,17 @@ class MatcherAgenet(BaseAgent):
             print("No valid skills found, defaulting to an empty list.")
             skills = []
 
+        #Validating and setting a default value for experience level
         if experience_level not in ["Junior", "Mid-level", "Senior"]:
             print("Invalid experience level detected, defaulting to Mid-level.")
             experience_level = "Mid-level"
 
         print(f" ==>>> Skills: {skills}, Experience Level: {experience_level}")
-        #Search jobs database
+        
+        #Calling the method to search for jobs based on skills and experience level.
         matching_jobs = self.search_jobs(skills, experience_level)
 
-        #Calculate match scores
+        #Calculate match scores for each job
         scored_jobs = []
         for job in matching_jobs:
             #Calculate match score based on requierments overlap
@@ -70,12 +78,14 @@ class MatcherAgenet(BaseAgent):
             candidate_skills = set(skills)
             overlap = len(required_skills.intersection(candidate_skills))
             total_required = len(required_skills)
+
+            #Calculating match score as a percentage of overlapping skills
             match_score = (
                 int((overlap/total_required)*100) if total_required > 0 else 0
             )
 
-            #Lower threshold for matching 30%
-            if match_score >= 30: # Include jobs with >30% match
+            #Lower threshold for matching 10%
+            if match_score >= 10: # Include jobs with >10% match
                 scored_jobs.append(
                     {
                         "title": f"{job['title']} at {job['company']}",
@@ -87,20 +97,22 @@ class MatcherAgenet(BaseAgent):
                 )
 
         print(f" ==>>> Scored Jobs: {scored_jobs}")
-        #Sort by match score
+
+        #Sorting scored jobs in descending order of match score
         scored_jobs.sort(key= lambda x: int(x["match_score"].rstrip("%")), reverse=True)
 
         return {
-            "matched_jobs": scored_jobs[:3], #Top 3 matches
+            "matched_jobs": scored_jobs[:3], # Return Top 3 matches
             "match_timestamp": datetime.now(),
             "number_of_matches": len(scored_jobs),
         }
     
     def search_jobs(self, skills: List[str], experience_level: str)-> List[Dict[str,Any]]:
         """Search jobs based on skills and experience level"""
+        # Constructing a dynamic SQL query to find matching jobs
         query = """
             SELECT * FROM jobs
-            WHERE experience_level = ?
+            WHERE LOWER(experience_level) = LOWER(?)
             AND (
             """
         query_conditions = []
@@ -114,13 +126,14 @@ class MatcherAgenet(BaseAgent):
         query += " OR ".join(query_conditions) + ")"
 
         try:
-            with sqlite3.connect(self.db.db.db_path) as conn:
+            # Connecting to the SQLite database and executing the query
+            with sqlite3.connect(self.db.db_path) as conn:
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
                 cursor.execute(query,params)
                 rows = cursor.fetchall()
 
-                return[
+                return [
                     {
                         "id": row["id"],
                         "title": row["title"],
@@ -130,12 +143,13 @@ class MatcherAgenet(BaseAgent):
                         "experience_level": row["experience_level"],
                         "salary_range": row["salary_range"],
                         "description": row["description"],
+                        # Parsing JSON fields from the database
                         "requirements": json.loads(row["requirements"]),
                         "benefits": (
                             json.loads(row["benefits"]) if row["benefits"] else []
                         ), 
                     }
-                    for row in rows:
+                    for row in rows
                 ]
         except Exception as e:
             print(f"Error searching jobs: {e}")

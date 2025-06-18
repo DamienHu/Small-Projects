@@ -1,0 +1,43 @@
+2025-06-18 16:38:41,140 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 16:38:44,394 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 16:38:44,396 - AI_Recruiter - ERROR - Error processing resume: malformed node or string on line 1: <ast.Call object at 0x0000018A6260B250>
+2025-06-18 16:38:44,396 - AI_Recruiter - ERROR - Processing error: malformed node or string on line 1: <ast.Call object at 0x0000018A6260B250>
+Traceback (most recent call last):
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\app.py", line 126, in main
+    result = asyncio.run(process_resume(file_path))
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\app.py", line 57, in process_resume
+    return await orchestrator.process_application(resume_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\agents\orchestrator.py", line 63, in process_application
+    job_matches = await self.matcher.run(
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+        [{"role":"user", "content": str(analysis_results)}]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Dom\Documents\GitHub\Small-Projects\Training Projects\Ollama Recruiting Agency\agents\matcher_agent.py", line 35, in run
+    analysis_results = ast.literal_eval(content)
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\ast.py", line 114, in literal_eval
+    return _convert(node_or_string)
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\ast.py", line 103, in _convert
+    return dict(zip(map(_convert, node.keys),
+                    map(_convert, node.values)))
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\ast.py", line 113, in _convert
+    return _convert_signed_num(node)
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\ast.py", line 87, in _convert_signed_num
+    return _convert_num(node)
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\ast.py", line 78, in _convert_num
+    _raise_malformed_node(node)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Dom\AppData\Local\Programs\Python\Python313\Lib\ast.py", line 75, in _raise_malformed_node
+    raise ValueError(msg + f': {node!r}')
+ValueError: malformed node or string on line 1: <ast.Call object at 0x0000018A6260B250>
