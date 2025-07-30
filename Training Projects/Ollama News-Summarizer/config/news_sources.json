@@ -1,0 +1,29 @@
+{
+    "default": [
+        {
+            "name": "General News",
+            "query": "latest news",
+            "category": "general"
+        },
+        {
+            "name": "Technology News",
+            "query": "latest technology news",
+            "category": "technology"
+        },
+        {
+            "name": "Business News",
+            "query": "latest business news",
+            "category": "business"
+        },
+        {
+            "name": "Sports News",
+            "query": "latest sports news",
+            "category": "sports"
+        },
+        {
+            "name": "Health News",
+            "query": "latest health news",
+            "category": "health"
+        }
+    ]
+}
