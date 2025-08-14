@@ -9,6 +9,7 @@ from typing import List
 import os
 import requests
 
+
 API_KEY = "pk.33a3197be1753cc405b82e783d923fb4"
 
 def load_configs():
@@ -81,7 +82,7 @@ def main():
                     st.write(f"State: {user_location_override['state']}")
                     st.write(f"Country: {user_location_override['country']}")
                     
-        location = location_service.get_location(user_override=user_location_override)
+        location = location_service.get_location(address=user_location_override)
         
         
         #Interest selector
@@ -127,13 +128,17 @@ def main():
     
     #Display articles
     for article in filtered_articles:
+        print(f"Extracting full text from URL: {article['link']}")
+        article["full_text"] = summarizer.extract_full_text(article["link"])
+        
         with st.expander(f"📰 {article['title']}", expanded=False):
             col1, col2 = st.columns([2,1])
 
             with col1:
-                st.markdown(f"**Source:** {article}")
+                st.markdown(f"**Title:** {article['title']}")
+                st.markdown(f"**Source:** {article.get('source', 'Unknown')}")
                 st.markdown(f"**Published:** {article['published'].strftime('%Y-%m-%d %H:%M')}")
-
+                
                 with st.spinner("Generating summary..."):
                     summary = summarizer.generate_summary(article)
                 st.markdown("### Summary")

@@ -4,6 +4,7 @@ from filter_engine import ArticleFilter
 import json
 import os
 
+
 def main():
     # Get the directory where this script resides
     script_dir = os.path.dirname(os.path.abspath(__file__))

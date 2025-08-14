@@ -18,15 +18,26 @@ class LocationService:
         with open(self.cache_file, "w") as f:
             json.dump(self.cache, f)
 
-    def get_location(self, user_override:Optional[Dict]=None)->Dict:
+    def get_location(self, address:Optional[Dict]=None)->Dict:
         """Get location info using IP geolocation"""
-        if user_override:
+        if address:
+            city = (
+                address.get("city") or
+                address.get("town") or
+                address.get("village") or
+                address.get("municipality") or
+                address.get("hamlet") or
+                address.get("locality") or
+                ""
+            )
+            state = address.get("state") or address.get("province") or ""
+            country = address.get("country") or ""
             return{
-                "city": user_override.get("city",""),
-                "state": user_override.get("state",""),
-                "country": user_override.get("country",""),
-                "lat": user_override.get("lat",None),
-                "lng": user_override.get("lng",None)
+                "city": city,
+                "state": state,
+                "country": country,
+                # "lat": user_override.get("lat",None),
+                # "lng": user_override.get("lng",None)
             }
         #Existing IP geolocation logic or hardcoded fallback
         location = {

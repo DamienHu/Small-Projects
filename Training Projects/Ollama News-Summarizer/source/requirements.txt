@@ -3,6 +3,9 @@ requests
 streamlit
 python-dateutil
 nltk
-duckduckgo-search
 geocoder
 pytz
+langdetect
+openai
+newspaper3k
+urllib3

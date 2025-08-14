@@ -8,7 +8,7 @@ import os
 from time import sleep
 from random import uniform
 import pytz
-from duckduckgo_search import DDGS
+from langdetect import detect, LangDetectException
 
 class NewsFetcher:
     def __init__(self, feeds_file: str = "config/news_sources.json"):
@@ -22,40 +22,56 @@ class NewsFetcher:
                 json.dump(default_feeds,f, indent=4)
 
         self.timezone = pytz.UTC
-            
+        self.gnews_api_key = os.getenv("GNEWS_API_KEY", "")
 
-    def _fetch_duckduckgo_news(self, query: str)-> List[Dict]:
+    def _fetch_gnews_news(self, query: str)-> List[Dict]:
         """Fetch news using DuckDuckGo search"""
         articles = []
         try:
-            #Initialize DuckDuckGo search API
-            ddg_api = DDGS()
-
-            #Perform the search with DuckDuckGo
             print(f"===>Query: {query}")
-            results = ddg_api.text(keywords="AI", max_results=100, region="us-en")
+            url = "https://gnews.io/api/v4/search"
 
-            #Loop through the search results
-            for result in results:
-                print(f"===>Result: {result.get('title', '')}")
-                title = result.get("title", "")
-                link = result.get("href", "")
-                snippet = result.get("body", "")
+            params = {
+                "q": query,
+                "lang": "en",
+                "max": 100,
+                "token":self.gnews_api_key,
+                "country":"ca",
+            }
 
-                #Check if title and link are present before appending
+            response = requests.get(url, params=params)
+            if response.status_code !=200:
+                print(f"Failed to fetch news: {response.status_code} {response.text}")
+                return[]
+
+            data = response.json()
+            for item in data.get("articles",[]):
+                title = item.get("title","")
+                link = item.get("url","")
+                snippet = item.get("description","")
+                published_str = item.get("plublishedAt","")
+
+                try:
+                    published = datetime.fromisoformat(published_str.rstrip("Z")).replace(tzinfo=pytz.UTC)
+                except Exception:
+                    published = datetime.now(self.timezone)
+
+                try:
+                    if detect(title) != "en":
+                        continue
+                except LangDetectException:
+                    continue
+                
                 if title and link:
-                    articles.append(
-                        {
-                            "title": title,
-                            "summary": snippet,
-                            "link": link,
-                            "published": datetime.now(self.timezone),
-                            "source": "DuckDuckGo",
-                            "category": "general",
-                        }
-                    )
-            
-            #Return a formatted list of articles or a message if no results
+                    articles.append({
+                        "title":title,
+                        "summary":snippet,
+                        "link":link,
+                        "published": published,
+                        "source": item.get("source",{}).get("name","GNews"),
+                        "category": "general"
+                    })
+                
             if articles:
                 return articles
             else:
@@ -63,8 +79,9 @@ class NewsFetcher:
                 return []
             
         except Exception as e:
-            print(f"Error fetching news from DuckDuckGo: {str(e)}")
+            print(f"Error fetching news from GNews: {str(e)}")
             return []
+
         
     def _get_default_feeds(self)->Dict:
         """Get default search queries for general news topics"""
@@ -107,18 +124,18 @@ class NewsFetcher:
         #1. Use location-specific search query
         try:
             location_query = self._get_location_query(location)
-            articles.extend(self._fetch_duckduckgo_news(location_query))
+            articles.extend(self._fetch_gnews_news(location_query))
             sleep(uniform(1,2)) #Adding a delay to avoid hitting rate limits
         except Exception as e:
             print(f"Error fetching location-specific news: {str(e)}")
 
         #2. Use default search queries if not enough articles
-        if len(articles) < 100:
+        if len(articles) < 10:
             try:
                 default_feeds = self._get_default_feeds()["default"]
                 for feed in default_feeds:
                     query = feed["query"]
-                    articles.extend(self._fetch_duckduckgo_news(query))
+                    articles.extend(self._fetch_gnews_news(query))
                     sleep(uniform(1,2)) #Adding a delay between queries
             except Exception as e:
                 print(f"Error fetching default news: {str(e)}")
