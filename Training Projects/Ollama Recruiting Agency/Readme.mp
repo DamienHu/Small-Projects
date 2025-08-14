@@ -16,10 +16,10 @@ Extensible architecture: Modular AI agents can be extended or replaced to improv
 Installation
 Clone this repository:
 
-```git clone https://github.com/DamienHu/Small-Projects/tree/main/Training%20Projects/Ollama%20Recruiting%20Agency```
+``` git clone https://github.com/DamienHu/Small-Projects/tree/main/Training%20Projects/Ollama%20Recruiting%20Agency ```
 Install dependencies:
 
-```pip install -r requirements.txt```
+``` pip install -r requirements.txt ```
 Configure ATS and dataset paths in config.yaml.
 
 Usage
@@ -27,7 +27,7 @@ Prepare your resume file(s) in supported formats (e.g., PDF, DOCX).
 
 Run the agent orchestrator:
 
-```streamlit run app.py```
+``` streamlit run app.py ```
 View the matching results and recommendations in the console or output report.
 
 Project Structure
